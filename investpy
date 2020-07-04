@@ -1,0 +1,38 @@
+#Investing.com's API
+import investpy
+#Library to organize the data
+import pandas as pd
+import numpy as np
+import math
+import datetime as dates
+from tech_indicators import TI
+
+#Define the number of days to work with and stock
+stock = "AZUL4"
+n_days = 300
+
+days = math.ceil((365/252)*(n_days)
+today = dates.datetime.now()
+start_date = today - dates.timedelta(days = days)
+start_date = start_date.strftime('%d/%m/%Y')
+today = today.strftime('%d/%m/%Y')
+  
+# Get the historical data
+def getStockHistorical(stock, start_date, today):
+    df = investpy.get_stock_historical_data(stock=stock, country=self.country, from_date=str(
+        start_date), to_date=str(today), as_json=False, order='ascending')
+    close_values = df['Close'].to_numpy()
+    open_values = df['Open'].to_numpy()
+    high_values = df['High'].to_numpy()
+    low_values = df['Low'].to_numpy()
+    volumes = df['Volume'].to_numpy()
+    volumes = np.where(volumes==0, 1, volumes)
+    data = [close_values,open_values,high_values,low_values,volumes]
+    return np.array(data)
+    
+stock_data = getStockHistorical(stock, start_date, today)
+
+ti = TI(stock_data)
+techindicators = ti.GenTechIndicators()
+dataset = np.concatenate((stock_data,tech_indicators))	
+print(dataset[-5:,:])
